@@ -1,0 +1,34 @@
+version: 1
+
+disable_existing_loggers: True
+
+formatters:
+
+  brief:
+    format: "%(message)s"
+    datefmt: "%Y/%m/%d %H:%M:%S"
+
+  precise:
+    format: "%(asctime)s - %(name)s - %(levelname)-9s - %(filename)-8s : %(lineno)s line - %(message)s"
+    datefmt: "%Y/%m/%d %H:%M:%S"
+
+handlers:
+  file:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: brief
+    filename: cycle_log.txt
+    maxBytes: 1024000
+    backupCount: 10
+
+loggers:
+  logger:
+    level: DEBUG
+    handlers: [ file ]
+    propagate: no
+
+root:
+  level: WARNING
+  handlers: [ file ]
+  propagate: no
+

@@ -1,0 +1,54 @@
+project:
+  assets: assets
+  # name you want for traning
+  #   content image and style image should be placed in {assets}/{name}/ and 
+  #   be prefixed with 'content' and 'style' respectively
+  name: starry
+  # add timestamp suffix, empty to not use
+  #   notice that it will be use in directory name
+  #   so \/:*?"<>| are invalid in Windows and are not recommand in Linux
+  timestamp: # '%y-%m-%d %H-%M'
+  # clear log or not
+  clear_log: True
+  # clear output or not, ignored when epoch do not start from 0
+  clear_output: True
+
+image:
+  # initial generated image, 'content' or 'noise'
+  #   ignored when epoch do not start from 0
+  init: content
+  # length of image short edge, generated image same with content image
+  content_imsize: 512
+  style_imsize: 512
+
+model:
+  # conv-relu layer used for loss
+  #   ranging from 1 to 16, corresponding to conv1_1, conv1_2, conv2_1, ..., conv5_4
+  content_layers: [10]
+  style_layers: [1, 3]
+  # empty to use equal weighting
+  content_weights:
+  style_weights: # [256, 64, 16, 4, 1]
+
+# LBFGS
+optimizer:
+  lr: 1
+  max_iter: 8
+
+# ExponentialLR
+scheduler:
+  gamma: 1
+
+loss:
+  # loss = alpha * content_loss + beta * style_loss
+  alpha: 0
+  beta: 1000
+
+epoch:
+  # epoch to start training from
+  #   if not 0, output/{start}.jpg will be loaded
+  start: 0
+  # number of epochs of generating
+  n: 2000
+  # interval between saving outputs
+  sample_interval: 20

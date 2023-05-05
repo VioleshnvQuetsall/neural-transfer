@@ -1,0 +1,2 @@
+[Epoch: 0/200] [Batch: 0/6287] [loss_D: 1.7489] [loss_G: 11.8867, adv: 1.8791, cycle: 0.6711, identity: 0.6594][ETA: 727 days, 11:29:31.218872]
+save sample: output/monet_and_photo\0.png
