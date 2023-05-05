@@ -2,7 +2,7 @@
 name: monet_and_photo
 
 # dataset root, {root}/trainA, {root}/trainB, {root}/testA, {root}/testB
-root: ../data/assets/
+root: ./assets/
 
 # epoch to start training from
 epoch: 30

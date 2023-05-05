@@ -9,8 +9,8 @@ from torch.autograd import Variable
 from torch.utils.data import DataLoader
 from torchvision.utils import save_image, make_grid
 
-from cycle_models import *
-from dataset import *
+from models import *
+from datasets import *
 from utils import *
 
 
