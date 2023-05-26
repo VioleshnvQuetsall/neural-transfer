@@ -28,6 +28,9 @@ class ImageDataset(Dataset):
 
         return image  # CHW
 
+    def __iter__(self):
+        return (self[i].unsqueeze(0) for i in range(len(self)))
+
     def sample(self, item):
         if type(item) == int:
             index = item

@@ -4,11 +4,11 @@ import torch
 
 def weights_init_normal(m):
     classname = m.__class__.__name__
-    if classname.find("Conv") != -1:
+    if "Conv" in classname:
         torch.nn.init.normal_(m.weight.data, 0.0, 0.02)
         if hasattr(m, "bias") and m.bias is not None:
             torch.nn.init.constant_(m.bias.data, 0.0)
-    elif classname.find("BatchNorm2d") != -1:
+    elif "BatchNorm2d" in classname:
         torch.nn.init.normal_(m.weight.data, 1.0, 0.02)
         torch.nn.init.constant_(m.bias.data, 0.0)
 
@@ -73,7 +73,11 @@ class GeneratorResNet(nn.Module):
             in_features = out_features
 
         # Output layer
-        model += [nn.ReflectionPad2d(channels), nn.Conv2d(out_features, channels, 7), nn.Tanh()]
+        model += [
+            nn.ReflectionPad2d(channels),
+            nn.Conv2d(out_features, channels, 7),
+            nn.Tanh()
+        ]
 
         self.model = nn.Sequential(*model)
 
@@ -92,7 +96,8 @@ class Discriminator(nn.Module):
 
         def discriminator_block(in_filters, out_filters, normalize=True):
             """Returns downsampling layers of each discriminator block"""
-            layers = [nn.Conv2d(in_filters, out_filters, 4, stride=2, padding=1)]
+            layers = [nn.Conv2d(in_filters, out_filters,
+                                4, stride=2, padding=1)]
             if normalize:
                 layers.append(nn.InstanceNorm2d(out_filters))
             layers.append(nn.LeakyReLU(0.2, inplace=True))

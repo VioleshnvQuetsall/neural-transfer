@@ -14,6 +14,8 @@ from datasets import *
 from utils import *
 
 
+os.chdir(os.path.dirname(__file__))
+
 cuda = torch.cuda.is_available()
 Tensor = torch.cuda.FloatTensor if cuda else torch.Tensor
 
@@ -48,14 +50,14 @@ def get_GD():
         G_BA.apply(weights_init_normal)
         D_A.apply(weights_init_normal)
         D_B.apply(weights_init_normal)
-    
+
     optimizer_G = torch.optim.Adam(chain(G_AB.parameters(), G_BA.parameters()),
                                    lr=opt.lr, betas=(opt.b1, opt.b2))
     optimizer_D_A = torch.optim.Adam(D_A.parameters(),
                                      lr=opt.lr, betas=(opt.b1, opt.b2))
     optimizer_D_B = torch.optim.Adam(D_B.parameters(),
                                      lr=opt.lr, betas=(opt.b1, opt.b2))
-    
+
     lr_scheduler_G = torch.optim.lr_scheduler.LambdaLR(
         optimizer_G, lr_lambda=LambdaLR(opt.n_epochs, opt.epoch, opt.decay_epoch).step)
     lr_scheduler_D_A = torch.optim.lr_scheduler.LambdaLR(

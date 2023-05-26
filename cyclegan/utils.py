@@ -33,7 +33,7 @@ def get_logger(file, stdout=True):
         logger = logging.getLogger('logger')
         if stdout:
             logger.addHandler(logging.StreamHandler(stream=sys.stdout))
-        
+
     return logger
 
 
@@ -44,7 +44,7 @@ def logger_test(logger):
     logger.error('error')
     logger.critical('critical')
 
-    
+
 class ReplayBuffer:
     def __init__(self, max_size=50):
         assert max_size > 0, "Empty buffer or trying to create a black hole. Be careful."
