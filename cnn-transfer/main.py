@@ -10,7 +10,7 @@ import numpy as np
 from PIL import Image
 
 import torch
-from torchvision import transforms, models
+from torchvision import transforms
 from torch.utils.tensorboard import SummaryWriter
 from torchvision.utils import save_image
 
@@ -19,6 +19,11 @@ from utils import *
 
 
 Tensor = torch.cuda.FloatTensor if cuda else torch.Tensor
+
+
+# ---------------
+#  Parse options
+# ---------------
 
 opt = parse_options('options.yaml')
 pprint(opt[None])
@@ -38,6 +43,7 @@ if opt.epoch.start == 0 and opt.project.clear_output:
     clear_log(output_dir)
 
 
+# normalize by mean and std of vgg19's dataset
 transform = transforms.Compose([
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
@@ -47,9 +53,9 @@ unnormalize = UnNormalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 
 
 def get_images():
-    # ------
-    #  Load
-    # ------
+    # ------------
+    #  Check path
+    # ------------
     content_path, style_path = None, None
     for file in (f for f in os.listdir(img_dir)
                  if os.path.isfile(os.path.join(img_dir, f))):
@@ -61,19 +67,22 @@ def get_images():
     if content_path is None or style_path is None:
         raise FileNotFoundError('content image or style image not found')
 
-    # -----------
-    #  Transform
-    # -----------
+    # -----------------------
+    #  Transform and reshape
+    # -----------------------
+
+    # load content image and style image
     content_img = Image.open(content_path).convert('RGB')
     style_img = Image.open(style_path).convert('RGB')
 
     print(f'load content: {content_path}, style: {style_path}')
 
     content_img = transforms.Resize(opt.image.content_imsize)(content_img)
-    content_img = transform(content_img).unsqueeze(0).type(Tensor)
+    content_img = transform(content_img).unsqueeze(0).type(Tensor)  # NCHW
     style_img = transforms.Resize(opt.image.style_imsize)(style_img)
     style_img = transform(style_img).unsqueeze(0).type(Tensor)
 
+    # load generated image just like loading model in other trainings
     if opt.epoch.start != 0:
         generate_img = transform(Image.open(
             os.path.join(output_dir, f'{opt.epoch.start}.jpg')))
@@ -85,9 +94,10 @@ def get_images():
         elif opt.image.init == 'noise':
             generate_img = torch.randn(content_img.shape)
         else:
-            raise ValudError(f'invalid init method: {opt.image.init}')
+            raise ValueError(f'invalid init method: {opt.image.init}')
 
     generate_img = generate_img.type(Tensor)
+
     if cuda:
         content_img = content_img.cuda()
         style_img = style_img.cuda()
@@ -167,16 +177,16 @@ def train_and_sample():
         optimizer.step(closure)
         scheduler.step()
 
-        # ---------------------
-        #  TensorBoard Display
-        # ---------------------
-
+        # calculate ETA
         batches_left = opt.epoch.n - epoch
         curr_time = time.time()
         time_left = datetime.timedelta(seconds=batches_left * (curr_time - prev_time))
         prev_time = curr_time
         print(f'[ETA: {time_left}]')
 
+        # ---------------------
+        #  TensorBoard Display
+        # ---------------------
         writer.add_scalar('Loss/Content', np.mean(display_content_loss), epoch)
         writer.add_scalar('Loss/Style', np.mean(display_style_loss), epoch)
         if epoch != 0 and epoch % opt.epoch.sample_interval == 0:
