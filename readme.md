@@ -2,8 +2,8 @@
 
 每个实现之间是独立的，目前已经实现的（按实现时间顺序）：
 
-- `cyclegan/` 即 CycleGAN，使用论文 [Unpaired Image-to-Image Translation
-  using Cycle-Consistent Adversarial Networks](https://arxiv.org/abs/1703.10593)
+- `cyclegan/` 即 CycleGAN，使用论文 [*Unpaired Image-to-Image Translation
+  using Cycle-Consistent Adversarial Networks*](https://arxiv.org/abs/1703.10593)
 - `cnn-transfer/` 使用论文 [*Image Style Transfer Using Convolutional Neural Networks*](https://ieeexplore.ieee.org/document/7780634)
 
 ## 说明
@@ -32,13 +32,15 @@
 
 - `utils.py` 日志记录和生成目录
 
-一般来说，`main.py` 以外的文件是独立的。
+- `generate.py` 使用模型对某一图片或某一目录进行风格迁移
+
+一般来说，`main.py` 和 `generate.py` 以外的文件是独立的。
 
 ## 使用
 
-在每个实现的目录下都有配置文件 `options.yaml` 或配置目录 `configs/`。这些配置一般包含：项目命名，epoch 设置，模型和数据的保存，模型参数和优化器参数，图像大小（将会被裁剪或变形）。
+在每个实现的目录下都有配置文件 `options.yaml` 或配置目录 `configs/`。这些配置一般包含：项目命名，epoch 设置，模型和数据的保存，模型参数和优化器参数，图像大小（将会被裁剪或变形）。不同项目的实现的结构不一定相同。
 
-然后按照配置将数据集放在 `assets/` 对应的子目录下，最后直接使用 `main.py` 脚本进行训练
+然后按照配置将数据集放在 `assets/` 对应的子目录下，最后直接使用 `main.py` 脚本进行训练（有监督学习）或生成（无监督学习）。
 
 ~~~python
 python main.py
