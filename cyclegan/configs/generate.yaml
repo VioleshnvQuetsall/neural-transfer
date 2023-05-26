@@ -1,0 +1,21 @@
+# dictionary or image file
+image_path: assets/otherA/0.jpg
+
+# G_AB path and G_BA path
+model_path: [ models/monet_and_photo/G_AB39, models/monet_and_photo/G_BA39 ]
+
+# A for A -> B, B for B -> A
+label: A
+
+# image of different size to be transfers
+# will be merge into a new image, whose size is the biggest sizes
+resizes: [null]  # [128, 256, 512]
+weights: [1]     # [1, 1, 1]
+
+# correspond to training settings
+img_height: 256
+img_width: 256
+channels: 3
+n_residual_blocks: 9
+
+output_dir: output
